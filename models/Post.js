@@ -5,7 +5,7 @@ const postSchema = new Schema(
   {
     title: {
       type: String,
-      required: true,
+      required: [true, "Please enter the post title"],
     },
     author: {
       type: Schema.Types.ObjectId,
@@ -14,11 +14,11 @@ const postSchema = new Schema(
     },
     description: {
       type: String,
-      required: true,
+      required: [true, "Please enter the post description"],
     },
     body: {
       type: String,
-      required: true,
+      required: [true, "Please enter the post body"],
     },
   },
   { timestamps: true }

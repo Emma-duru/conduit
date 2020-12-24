@@ -61,7 +61,10 @@
                 location.assign("/<%= user.username %>")
             }
             if (data.errors) {
-                console.log(data.errors)
+                titleError.textContent = data.errors.title;
+                descError.textContent = data.errors.description;
+                bodyError.textContent = data.errors.body;
+                
             }
         } catch(err) {
             console.log(err)
