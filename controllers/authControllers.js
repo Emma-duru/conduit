@@ -89,7 +89,7 @@ module.exports.login_post = async (req, res) => {
     res.json({ user });
   } catch (err) {
     const errors = handleLoginErrors(err);
-    res.json({ err });
+    res.json({ errors });
   }
 };
 

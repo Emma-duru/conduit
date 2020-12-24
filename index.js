@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 
 const authRouter = require("./routes/authRoutes");
+const postRouter = require("./routes/postRoutes");
 const { checkUser } = require("./middleware/authMiddleware");
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -29,6 +30,7 @@ mongoose.connect(
 
 app.use("*", checkUser);
 app.use(authRouter);
+app.use(postRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, (err) => {
