@@ -47,4 +47,13 @@ userSchema.statics.login = async function (username, password) {
   throw new Error("Incorrect username");
 };
 
+userSchema.virtual("posts", {
+  ref: "Post",
+  localField: "_id",
+  foreignField: "author",
+});
+
+userSchema.set("toObject", { virtuals: true });
+userSchema.set("toJSON", { virtuals: true });
+
 module.exports = mongoose.model("User", userSchema);
