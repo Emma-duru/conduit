@@ -1,0 +1,86 @@
+<%- include("../layout/header") %> 
+<div class="d-flex justify-content-center mt-4">
+<!-- Default form register -->
+<form class="text-center p-5 col-lg-6" id="signup-form">
+
+    <p class="h3 mb-4">Sign up</p>
+
+    <!-- Username -->
+    <div class="mb-4">
+        <input type="text" id="defaultRegisterFormLastName" class="form-control" name="username" placeholder="Username">
+        <small class="username-error text-danger"></small>
+    </div>
+
+    <!-- E-mail -->
+    <div class="mb-4">
+        <input type="email" id="defaultRegisterFormEmail" class="form-control" name="email" placeholder="E-mail">
+        <small class="email-error text-danger"></small>
+    </div>
+
+    <!-- Password -->
+    <div class="mb-4">
+        <input type="password" id="defaultRegisterFormConfirmPassword" class="form-control" name="password" placeholder="Password" aria-describedby="defaultRegisterFormPasswordHelpBlock">
+        <small class="password-error text-danger"></small>
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="mb-4">
+        <input type="password" id="defaultRegisterFormPassword" class="form-control" name="confirmPassword" placeholder="Confirm Password" aria-describedby="defaultRegisterFormPasswordHelpBlock">
+    </div>
+    
+
+    <!-- Sign up button -->
+    <button class="btn btn-info my-4 btn-block" type="submit">Sign up</button>
+
+
+</form>
+<!-- Default form register -->
+</div>
+
+<script>
+    const form = document.querySelector("#signup-form")
+    const usernameError = document.querySelector(".username-error")
+    const emailError = document.querySelector(".email-error")
+    const passwordError = document.querySelector(".password-error")
+
+    form.addEventListener("submit", async(e) => {
+        e.preventDefault()
+        usernameError.textContent = ""
+        emailError.textContent = ""
+        passwordError.textContent = ""
+
+        const username = form.username.value
+        const email = form.email.value;
+        const password = form.password.value;
+        const confirmPassword = form.confirmPassword.value;
+
+        if (password !== confirmPassword) {
+            passwordError.textContent = "The two password fields must match";
+            form.removeEventListener();
+        }
+
+        try{
+            const res = await fetch("/signup", {
+                method: "POST",
+                body: JSON.stringify({username, email, password}),
+                headers: {"Content-Type": "application/json"}
+            });
+            const data = await res.json();
+            
+            if (data.errors) {
+                usernameError.textContent = data.errors.username;
+                emailError.textContent = data.errors.email;
+                passwordError.textContent = data.errors.password;
+                
+            }
+
+            if(data.user) {
+                location.assign("/")
+            }
+        } catch(err) {
+            console.log(err)
+        }
+    })
+</script>
+
+<%- include("../layout/footer") %>
