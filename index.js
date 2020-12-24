@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const methodOverride = require("method-override");
 
 const authRouter = require("./routes/authRoutes");
 const postRouter = require("./routes/postRoutes");
@@ -13,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.set("view engine", "ejs");
 app.use(cookieParser());
+app.use(methodOverride("_method"));
 
 mongoose.connect(
   process.env.DB_URI,

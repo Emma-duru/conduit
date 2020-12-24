@@ -13,8 +13,16 @@ const handlePostError = (err) => {
   return errors;
 };
 
-module.exports.user_posts = (req, res) => {
-  res.render("user/posts");
+module.exports.user_posts = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await User.findOne({ username }).populate("posts");
+    const posts = await Post.find();
+    res.render("user/posts", { posts: user.posts });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 module.exports.post_create_get = (req, res) => {
@@ -24,7 +32,6 @@ module.exports.post_create_get = (req, res) => {
 module.exports.post_create_post = async (req, res) => {
   const { title, description, body } = req.body;
   const { username } = res.locals.user;
-  console.log(req.body);
 
   try {
     const user = await User.findOne({ username });
@@ -34,10 +41,57 @@ module.exports.post_create_post = async (req, res) => {
       body,
       author: user._id,
     });
-    console.log(post);
     res.json({ post });
   } catch (error) {
     const errors = handlePostError(error);
     res.json({ errors });
   }
+};
+
+module.exports.post_detail = async (req, res) => {
+  const { postId } = req.params;
+  try {
+    const post = await Post.findOne({ _id: postId }).populate("author");
+    res.render("post/detail", { post: post });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports.post_edit_get = async (req, res) => {
+  const { postId } = req.params;
+  try {
+    const post = await Post.findOne({ _id: postId });
+    res.render("post/edit", { post: post });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports.post_edit_post = async (req, res) => {
+  const { postId } = req.params;
+  const { title, description, body } = req.body;
+  try {
+    const post = await Post.findByIdAndUpdate(postId, {
+      title,
+      description,
+      body,
+    });
+    res.json({ post });
+  } catch (error) {
+    const errors = handlePostError(error);
+    res.json({ errors });
+  }
+};
+
+module.exports.post_delete = (req, res) => {
+  const { postId } = req.params;
+  Post.findByIdAndDelete(postId)
+    .then((err) => {
+      if (err) throw err;
+      res.redirect(`/${res.locals.user.username}`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };

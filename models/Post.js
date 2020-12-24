@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const { DateTime } = require("luxon");
 
 const postSchema = new Schema(
   {
@@ -23,5 +24,9 @@ const postSchema = new Schema(
   },
   { timestamps: true }
 );
+
+postSchema.virtual("date").get(function () {
+  return DateTime.fromJSDate(this.createdAt).toLocaleString(DateTime.DATE_MED);
+});
 
 module.exports = mongoose.model("Post", postSchema);

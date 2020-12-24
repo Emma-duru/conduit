@@ -1,5 +1,27 @@
 <%- include("../layout/header") %> 
 
-<h1>All Posts</h1>
+<h1 class="my-4 text-center">Posts</h1>
+
+<% posts.forEach(post => { %>
+<div class="row d-flex justify-content-center">
+    <!-- Card -->
+<div class="card my-3 col-lg-10">
+
+<!-- Card content -->
+<div class="card-body">
+
+    <!-- Title -->
+    <h4 class="card-title"><a href="/post/<%= post._id %> "><%= post.title %></a> </h4>
+    <!-- Text -->
+    <p class="card-text"><%= post.description %> </p>
+    <!-- Button -->
+    <small><a href="/post/<%= post._id %> ">Read More</a></small>
+
+</div>
+
+</div>
+<!-- Card -->
+</div>
+<% }) %> 
 
 <%- include("../layout/footer") %> 
