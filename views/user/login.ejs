@@ -1,0 +1,68 @@
+<%- include("../layout/header") %> 
+<div class="d-flex justify-content-center mt-4">
+<!-- Default form register -->
+<form class="text-center p-5 col-lg-6" id="login-form">
+
+    <p class="h3 mb-4">Login</p>
+
+    <!-- Username -->
+    <div class="mb-4">
+        <input type="text" id="defaultRegisterFormLastName" class="form-control" name="username" placeholder="Username">
+        <small class="username-error text-danger"></small>
+    </div>
+
+    <!-- Password -->
+    <div class="mb-4">
+        <input type="password" id="defaultRegisterFormConfirmPassword" class="form-control" name="password" placeholder="Password" aria-describedby="defaultRegisterFormPasswordHelpBlock">
+        <small class="password-error text-danger"></small>
+    </div>
+    
+
+    <!-- Sign up button -->
+    <button class="btn btn-info my-4 btn-block" type="submit">Log in</button>
+    <p>Don't have an account?
+        <a href="/login">Register</a>
+    </p>
+
+
+</form>
+<!-- Default form register -->
+</div>
+
+<script>
+    const form = document.querySelector("#login-form");
+    const usernameError = document.querySelector(".username-error");
+    const passwordError = document.querySelector(".password-error");
+
+    form.addEventListener("submit", async(e) => {
+        e.preventDefault();
+        usernameError.textContent = "";
+        passwordError.textContent = "";
+
+        const username = form.username.value;
+        const password = form.password.value;
+
+        try{
+            const res = await fetch("/login", {
+                method: "POST",
+                body: JSON.stringify({username, password}),
+                headers: {"Content-Type": "application/json"}
+            });
+            const data = await res.json();
+            
+            if (data.errors) {
+                usernameError.textContent = data.errors.username;
+                passwordError.textContent = data.errors.password;
+                
+            }
+
+            if(data.user) {
+                location.assign("/")
+            }
+        } catch(err) {
+            console.log(err)
+        }
+    })
+</script>
+
+<%- include("../layout/footer") %>

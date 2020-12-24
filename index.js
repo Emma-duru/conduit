@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 
 const authRouter = require("./routes/authRoutes");
+const { checkUser } = require("./middleware/authMiddleware");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -26,6 +27,7 @@ mongoose.connect(
   }
 );
 
+app.use("*", checkUser);
 app.use(authRouter);
 
 const PORT = process.env.PORT || 3000;

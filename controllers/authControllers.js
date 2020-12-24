@@ -33,6 +33,19 @@ const handleSignupErrors = (err) => {
   return errors;
 };
 
+const handleLoginErrors = (err) => {
+  const errors = {};
+  if (err.message === "Incorrect username") {
+    errors.username = "This username is incorrect";
+  }
+
+  if (err.message === "Incorrect password") {
+    errors.password = "This password is incorrect";
+  }
+
+  return errors;
+};
+
 module.exports.home_get = (req, res) => {
   res.render("home");
 };
@@ -55,6 +68,28 @@ module.exports.signup_post = async (req, res) => {
   } catch (error) {
     const errors = handleSignupErrors(error);
     res.json({ errors });
+  }
+};
+
+module.exports.login_get = (req, res) => {
+  res.render("user/login");
+};
+
+module.exports.login_post = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.login(username, password);
+    console.log(user);
+    const token = createToken(user._id);
+    res.cookie("med_auth", token, {
+      httpOnly: true,
+      maxAge: 3 * 24 * 60 * 60 * 1000,
+    });
+    res.json({ user });
+  } catch (err) {
+    const errors = handleLoginErrors(err);
+    res.json({ err });
   }
 };
 
