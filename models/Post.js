@@ -21,6 +21,12 @@ const postSchema = new Schema(
       type: String,
       required: [true, "Please enter the post body"],
     },
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true }
 );

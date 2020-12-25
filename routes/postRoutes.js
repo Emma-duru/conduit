@@ -24,4 +24,5 @@ router.delete(
   postControllers.post_comment_delete
 );
 
+router.post("/post/:postId/like", requireAuth, postControllers.post_like);
 module.exports = router;

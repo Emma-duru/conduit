@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 app.set("view engine", "ejs");
 app.use(cookieParser());
 app.use(methodOverride("_method"));
+app.use(express.static("public"));
 
 mongoose.connect(
   process.env.DB_URI,

@@ -24,6 +24,7 @@
         <small class="text-danger body-error"></small>
     </div>
    
+    <input type="hidden" name="user" value="<%= user.username %> ">
     <!-- Send button -->
     <button class="btn btn-info btn-block" type="submit">Create Post</button>
 
@@ -32,48 +33,7 @@
 </div>
 
 
-<script>
-    const form = document.querySelector("#create-form");
-    const titleError = document.querySelector(".title-error");
-    const descError = document.querySelector(".description-error");
-    const bodyError = document.querySelector(".body-error")
-
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault()
-
-        titleError.textContent = "";
-        descError.textContent = "";
-        bodyError.textContent = "";
-
-        const title = form.title.value;
-        const description = form.description.value;
-        const body = form.body.value;
-
-        try {
-            const res = await fetch("/create", {
-                method: 'POST',
-                body: JSON.stringify({ title, description, body }),
-                headers: {"Content-Type": "application/json"}
-            })
-            const data = await res.json()
-
-            if (data.post) {
-                location.assign("/<%= user.username %>")
-            }
-            if (data.errors) {
-                titleError.textContent = data.errors.title;
-                descError.textContent = data.errors.description;
-                bodyError.textContent = data.errors.body;
-                
-            }
-        } catch(err) {
-            console.log(err)
-        }
-    })
-
-    
-
-</script>
+<script src="javascript/post/create.js"></script>
 
 
 <%- include("../layout/footer") %> 

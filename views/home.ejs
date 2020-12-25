@@ -12,6 +12,18 @@
         <small class="text-muted">Posted by <%= post.author.username %> on <%= post.date %> </small>
     </div>
     <div class="card-body">
+        <form action="/post/<%= post._id %>/like" method="POST" class="float-right like-form">
+            <input type="hidden" name="postId" value="<%= post._id %>">
+            <%= post.likes.length %> 
+            <button class="btn btn-link p-1">
+                <% if (user && post.likes.indexOf(user._id) !== -1) { %>
+                    <i class="fas fa-thumbs-up" style="font-size: 18px;"></i>
+                <% } else { %> 
+                    <i class="far fa-thumbs-up" style="font-size: 18px;"></i>
+                <% } %> 
+                
+            </button>
+        </form>
         <!-- Text -->
         <p class="card-text"><%= post.description %> </p>
         <!-- Button -->
@@ -23,5 +35,6 @@
 </div>
 </div>
 <% }) %> 
+
 
 <%- include("./layout/footer") %> 

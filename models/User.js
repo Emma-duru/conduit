@@ -22,6 +22,12 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Please enter your password"],
     },
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
   },
   { timestamps: true }
 );

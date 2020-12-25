@@ -72,12 +72,14 @@ module.exports.post_edit_get = async (req, res) => {
 module.exports.post_edit_post = async (req, res) => {
   const { postId } = req.params;
   const { title, description, body } = req.body;
+  console.log(req.body);
   try {
     const post = await Post.findByIdAndUpdate(postId, {
       title,
       description,
       body,
     });
+    console.log(req.body);
     res.json({ post });
   } catch (error) {
     const errors = handlePostError(error);
@@ -130,5 +132,36 @@ module.exports.post_comment_delete = (req, res) => {
       });
   } catch (err) {
     res.json({ errors });
+  }
+};
+
+module.exports.post_like = async (req, res) => {
+  const { postId } = req.params;
+  const { username } = res.locals.user;
+  try {
+    let post = await Post.findOne({ _id: postId });
+    let user = await User.findOne({ username });
+    if (post.likes.indexOf(user._id) !== -1) {
+      user = await User.findOneAndUpdate(
+        { username },
+        { $pull: { likes: post._id } }
+      );
+      post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $pull: { likes: user._id } }
+      );
+    } else {
+      user = await User.findOneAndUpdate(
+        { username },
+        { $push: { likes: post._id } }
+      );
+      post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $push: { likes: user._id } }
+      );
+    }
+    res.redirect(`/${user.username}`);
+  } catch (err) {
+    console.log(err);
   }
 };
