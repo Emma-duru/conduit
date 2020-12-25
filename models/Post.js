@@ -29,4 +29,13 @@ postSchema.virtual("date").get(function () {
   return DateTime.fromJSDate(this.createdAt).toLocaleString(DateTime.DATE_MED);
 });
 
+postSchema.virtual("comments", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "post",
+});
+
+postSchema.set("toObject", { virtuals: true });
+postSchema.set("toJSON", { virtuals: true });
+
 module.exports = mongoose.model("Post", postSchema);

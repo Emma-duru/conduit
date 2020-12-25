@@ -1,5 +1,6 @@
 require("dotenv").config();
 const User = require("../models/User");
+const Post = require("../models/Post");
 const jwt = require("jsonwebtoken");
 
 const createToken = (id) => {
@@ -46,8 +47,13 @@ const handleLoginErrors = (err) => {
   return errors;
 };
 
-module.exports.home_get = (req, res) => {
-  res.render("home");
+module.exports.home_get = async (req, res) => {
+  try {
+    const posts = await Post.find().populate("author");
+    res.render("home", { posts: posts });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 module.exports.signup_get = (req, res) => {

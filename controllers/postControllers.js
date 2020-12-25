@@ -1,5 +1,6 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
+const Comment = require("../models/Comment");
 
 const handlePostError = (err) => {
   const errors = {};
@@ -18,7 +19,6 @@ module.exports.user_posts = async (req, res) => {
 
   try {
     const user = await User.findOne({ username }).populate("posts");
-    const posts = await Post.find();
     res.render("user/posts", { posts: user.posts });
   } catch (err) {
     console.log(err);
@@ -52,7 +52,8 @@ module.exports.post_detail = async (req, res) => {
   const { postId } = req.params;
   try {
     const post = await Post.findOne({ _id: postId }).populate("author");
-    res.render("post/detail", { post: post });
+    const comments = await Comment.find({ post: post._id }).populate("author");
+    res.render("post/detail", { post: post, postComments: comments });
   } catch (error) {
     console.log(error);
   }
@@ -87,11 +88,47 @@ module.exports.post_edit_post = async (req, res) => {
 module.exports.post_delete = (req, res) => {
   const { postId } = req.params;
   Post.findByIdAndDelete(postId)
-    .then((err) => {
-      if (err) throw err;
+    .then(() => {
       res.redirect(`/${res.locals.user.username}`);
     })
     .catch((err) => {
       console.log(err);
     });
+};
+
+module.exports.post_comment_create = async (req, res) => {
+  const { body } = req.body;
+  const { username } = res.locals.user;
+  const { postId } = req.params;
+
+  try {
+    const user = await User.findOne({ username });
+    console.log(user);
+    const post = await Post.findById(postId);
+    const comment = await Comment.create({
+      author: user._id,
+      post: post._id,
+      body: body,
+    });
+    res.json({ comment });
+  } catch (error) {
+    const errors = handlePostError(error);
+    res.json({ errors });
+  }
+};
+
+module.exports.post_comment_delete = (req, res) => {
+  const { postId, commentId } = req.params;
+
+  try {
+    Comment.findByIdAndDelete(commentId)
+      .then(() => {
+        res.redirect(`/post/${postId}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } catch (err) {
+    res.json({ errors });
+  }
 };
