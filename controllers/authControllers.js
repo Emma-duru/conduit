@@ -86,7 +86,6 @@ module.exports.login_post = async (req, res) => {
 
   try {
     const user = await User.login(username, password);
-    console.log(user);
     const token = createToken(user._id);
     res.cookie("med_auth", token, {
       httpOnly: true,
