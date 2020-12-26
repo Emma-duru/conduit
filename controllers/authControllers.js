@@ -98,9 +98,33 @@ module.exports.login_post = async (req, res) => {
   }
 };
 
-module.exports.logout = async (req, res) => {
+module.exports.logout = (req, res) => {
   res.cookie("med_auth", "", {
     maxAge: 1,
   });
   res.redirect("/");
+};
+
+module.exports.edit_get = (req, res) => {
+  res.render("user/edit");
+};
+
+module.exports.edit_put = async (req, res) => {
+  const { username, email, bio } = req.body;
+  const { _id } = res.locals.user;
+  try {
+    const user = await User.findByIdAndUpdate(
+      _id,
+      {
+        username,
+        email,
+        bio: bio,
+      },
+      { new: true }
+    );
+    console.log(user);
+    res.json({ user });
+  } catch (err) {
+    console.log(err);
+  }
 };

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const { isEmail } = require("validator");
 const bcrypt = require("bcrypt");
+const { DateTime } = require("luxon");
 
 const userSchema = new Schema(
   {
@@ -18,6 +19,9 @@ const userSchema = new Schema(
       unique: true,
       validate: [isEmail, "Please enter a valid email"],
     },
+    bio: {
+      type: String,
+    },
     password: {
       type: String,
       required: [true, "Please enter your password"],
@@ -31,6 +35,10 @@ const userSchema = new Schema(
   },
   { timestamps: true }
 );
+
+userSchema.virtual("date").get(function () {
+  return DateTime.fromJSDate(this.createdAt).toLocaleString(DateTime.DATE_MED);
+});
 
 userSchema.pre("save", async function () {
   try {

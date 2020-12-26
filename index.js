@@ -8,7 +8,7 @@ const methodOverride = require("method-override");
 
 const authRouter = require("./routes/authRoutes");
 const postRouter = require("./routes/postRoutes");
-const { checkUser } = require("./middleware/authMiddleware");
+const { checkUser, ignoreFavicon } = require("./middleware/authMiddleware");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -31,7 +31,7 @@ mongoose.connect(
   }
 );
 
-app.use("*", checkUser);
+app.use("*", checkUser, ignoreFavicon);
 app.use(authRouter);
 app.use(postRouter);
 

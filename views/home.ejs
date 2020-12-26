@@ -9,7 +9,7 @@
 
     <div class="card-header">
         <h4 class="card-title"><a href="/post/<%= post._id %> "><%= post.title %></a> </h4>
-        <small class="text-muted">Posted by <%= post.author.username %> on <%= post.date %> </small>
+        <small class="text-muted">Posted by <a href="/<%= post.author.username %>"><%= post.author.username %></a> on <%= post.date %> </small>
     </div>
     <div class="card-body">
         <form action="/post/<%= post._id %>/like" method="POST" class="float-right like-form">

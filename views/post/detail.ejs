@@ -65,7 +65,7 @@
             <div class="card-header">
               <% if (user && user.username === comment.author.username) { %> 
               <form action="/post/<%= post._id %>/comment/<%= comment._id %>?_method=DELETE" class="float-right" method="post">
-                <button type="submit" class="btn btn-link"><i class="fas fa-trash fa-2x text-danger"></i></button>
+                <button type="submit" class="btn btn-link"><i class="fas fa-trash text-danger" style="font-size: 18px;"></i></button>
               </form>
               <% } %> 
               <%= comment.author.username %><br> <small class="text-muted"><%= comment.date %> </small></div>
@@ -102,8 +102,8 @@
         headers: {"Content-Type": "application/json"}
       });
       const data = await res.json();
-      if (data.comment) {
-        location.assign(`/post/${data.comment.post}`)
+      if (data.post) {
+        location.reload()
       }
       if (data.errors) {
         bodyError.textContent = data.errors.body;

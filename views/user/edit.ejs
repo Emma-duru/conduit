@@ -1,0 +1,68 @@
+<%- include("../layout/header") %> 
+<div class="d-flex justify-content-center mt-4">
+<!-- Default form register -->
+<form class="text-center p-5 col-lg-6" id="edit-form">
+
+    <p class="h3 mb-4">Edit Profile</p>
+
+    <!-- Username -->
+    <div class="mb-4">
+        <input type="text" id="defaultRegisterFormLastName" class="form-control" name="username" value="<%= user.username %>">
+        <small class="username-error text-danger"></small>
+    </div>
+
+    <!-- E-mail -->
+    <div class="mb-4">
+        <input type="email" id="defaultRegisterFormEmail" class="form-control" name="email" value="<%= user.email %>">
+        <small class="email-error text-danger"></small>
+    </div>
+    
+    <div class="mb-4">
+        <textarea name="bio" class="form-control" rows="5"><%= user.bio %></textarea>
+    </div>
+
+    <input type="submit" class="btn btn-secondary" value="Edit Profile">
+    <a href="/<%= user.username %>" class="btn btn-info">Cancel</a>
+</form>
+<!-- Default form register -->
+</div>
+
+<script>
+    const form = document.querySelector("#edit-form")
+    const usernameError = document.querySelector(".username-error")
+    const emailError = document.querySelector(".email-error")
+
+    form.addEventListener("submit", async(e) => {
+        e.preventDefault()
+        usernameError.textContent = ""
+        emailError.textContent = ""
+
+        const username = form.username.value
+        const email = form.email.value;
+        const bio = form.bio.value;
+
+        try{
+            const res = await fetch("/edit?_method=PUT", {
+                method: "PUT",
+                body: JSON.stringify({username, email, bio}),
+                headers: {"Content-Type": "application/json"}
+            });
+            const data = await res.json();
+            
+            if (data.errors) {
+                usernameError.textContent = data.errors.username;
+                emailError.textContent = data.errors.email;
+                
+            }
+
+            if(data.user) {
+                console.log(data.user)
+                location.assign(`/${data.user.username}`)
+            }
+        } catch(err) {
+            console.log(err)
+        }
+    })
+</script>
+
+<%- include("../layout/footer") %>

@@ -21,6 +21,21 @@ const postSchema = new Schema(
       type: String,
       required: [true, "Please enter the post body"],
     },
+    comments: [
+      {
+        body: {
+          type: String,
+        },
+        author: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now(),
+        },
+      },
+    ],
     likes: [
       {
         type: Schema.Types.ObjectId,
@@ -35,10 +50,8 @@ postSchema.virtual("date").get(function () {
   return DateTime.fromJSDate(this.createdAt).toLocaleString(DateTime.DATE_MED);
 });
 
-postSchema.virtual("comments", {
-  ref: "Comment",
-  localField: "_id",
-  foreignField: "post",
+postSchema.paths.comments.schema.virtual("date").get(function () {
+  return DateTime.fromJSDate(this.createdAt).toLocaleString(DateTime.DATE_MED);
 });
 
 postSchema.set("toObject", { virtuals: true });
