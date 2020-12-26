@@ -17,8 +17,8 @@ module.exports.user_posts = async (req, res) => {
   const { username } = req.params;
 
   try {
-    const user = await User.findOne({ username });
-    const posts = await Post.find({ author: user._id });
+    const user = await User.findOne({ username }).populate("likes");
+    const posts = await Post.find({ author: user._id }).sort("-createdAt");
     res.render("user/posts", { posts: posts, userInfo: user });
   } catch (err) {
     console.log(err);
@@ -54,7 +54,10 @@ module.exports.post_detail = async (req, res) => {
     const post = await Post.findOne({ _id: postId })
       .populate("author")
       .populate("comments.author");
-    res.render("post/detail", { post: post, postComments: post.comments });
+    res.render("post/detail", {
+      post: post,
+      postComments: post.comments.reverse(),
+    });
   } catch (error) {
     console.log(error);
   }

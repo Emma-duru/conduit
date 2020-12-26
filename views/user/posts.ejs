@@ -5,6 +5,7 @@
 <div class="jumbotron jumbotron-fluid text-center view p-4">
         <img src="/images/profile-pic.jpg" class="rounded-circle m-auto" height="120px" width="120px"/>
         <h2 class="my-2"><%= userInfo.username %> </h2> 
+        <p><%= userInfo.bio %> </p>
         <% if(user && user.username === userInfo.username){ %> 
         <a href="/edit" class="btn btn-secondary p-2 my-2 mx-4">Edit Profile</a><br>
         <% } %> 
@@ -12,41 +13,97 @@
 </div>
 
 <div class="container mb-4">
-    <h1 class="my-4 text-center"><%= userInfo.username %>'s posts</h1>
-<% posts.forEach(post => { %>
+ 
+
 <div class="row d-flex justify-content-center">
-  
-  <div class="col-lg-10">  <!-- Card -->
-<div class="card my-2">
+        
+        <div class="col-lg-10"> 
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+      aria-selected="true"><%= userInfo.username %>'s posts</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+      aria-selected="false">liked posts</a>
+  </li>
+</ul>
+</div>
+</div>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+     <% posts.forEach(post => { %>
+        <div class="row d-flex justify-content-center">
+        
+        <div class="col-lg-10">  <!-- Card -->
+        <div class="card my-2">
 
-    <div class="card-header">
-        <h4 class="card-title"><a href="/post/<%= post._id %> "><%= post.title %></a> </h4>
-        <small class="text-muted">Posted by <a href="/<%= userInfo.username %>"><%= userInfo.username %></a> on <%= post.date %> </small>
-    </div>
-    <div class="card-body">
-        <form action="/post/<%= post._id %>/like" method="POST" class="float-right like-form">
-            <input type="hidden" name="postId" value="<%= post._id %>">
-            <%= post.likes.length %> 
-            <button class="btn btn-link p-1">
-                <% if (user && post.likes.indexOf(user._id) !== -1) { %>
-                    <i class="fas fa-thumbs-up" style="font-size: 18px;"></i>
-                <% } else { %> 
-                    <i class="far fa-thumbs-up" style="font-size: 18px;"></i>
-                <% } %> 
-                
-            </button>
-        </form>
-        <!-- Text -->
-        <p class="card-text"><%= post.description %> </p>
-        <!-- Button -->
-        <small><a href="/post/<%= post._id %> ">Read More</a></small>
+            <div class="card-header">
+                <h4 class="card-title"><a href="/post/<%= post._id %> "><%= post.title %></a> </h4>
+                <small class="text-muted">Posted by <a href="/<%= userInfo.username %>"><%= userInfo.username %></a> on <%= post.date %> </small>
+            </div>
+            <div class="card-body">
+                <form action="/post/<%= post._id %>/like" method="POST" class="float-right like-form">
+                    <input type="hidden" name="postId" value="<%= post._id %>">
+                    <%= post.likes.length %> 
+                    <button class="btn btn-link p-1">
+                        <% if (user && post.likes.indexOf(user._id) !== -1) { %>
+                            <i class="fas fa-thumbs-up" style="font-size: 18px;"></i>
+                        <% } else { %> 
+                            <i class="far fa-thumbs-up" style="font-size: 18px;"></i>
+                        <% } %> 
+                        
+                    </button>
+                </form>
+                <!-- Text -->
+                <p class="card-text"><%= post.description %> </p>
+                <!-- Button -->
+                <small><a href="/post/<%= post._id %> ">Read More</a></small>
 
-    </div>
+            </div>
+        </div>
+        <!-- Card -->
+        </div>
+        </div>
+        <% }) %> 
+  </div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+      <% userInfo.likes.reverse().forEach(post => { %>
+          <div class="row d-flex justify-content-center">
+        
+        <div class="col-lg-10">  <!-- Card -->
+        <div class="card my-2">
+
+            <div class="card-header">
+                <h4 class="card-title"><a href="/post/<%= post._id %> "><%= post.title %></a> </h4>
+                <small class="text-muted">Posted by <a href="/<%= userInfo.username %>"><%= userInfo.username %></a> on <%= post.date %> </small>
+            </div>
+            <div class="card-body">
+                <form action="/post/<%= post._id %>/like" method="POST" class="float-right like-form">
+                    <input type="hidden" name="postId" value="<%= post._id %>">
+                    <%= post.likes.length %> 
+                    <button class="btn btn-link p-1">
+                        <% if (user && post.likes.indexOf(user._id) !== -1) { %>
+                            <i class="fas fa-thumbs-up" style="font-size: 18px;"></i>
+                        <% } else { %> 
+                            <i class="far fa-thumbs-up" style="font-size: 18px;"></i>
+                        <% } %> 
+                        
+                    </button>
+                </form>
+                <!-- Text -->
+                <p class="card-text"><%= post.description %> </p>
+                <!-- Button -->
+                <small><a href="/post/<%= post._id %> ">Read More</a></small>
+
+            </div>
+        </div>
+        <!-- Card -->
+        </div>
+        </div>
+      <% }) %> 
+  </div>
 </div>
-<!-- Card -->
-</div>
-</div>
-<% }) %> 
 
 
 <%- include("../layout/footer") %> 

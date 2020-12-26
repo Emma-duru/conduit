@@ -49,7 +49,7 @@ const handleLoginErrors = (err) => {
 
 module.exports.home_get = async (req, res) => {
   try {
-    const posts = await Post.find().populate("author");
+    const posts = await Post.find().populate("author").sort("-createdAt");
     res.render("home", { posts: posts });
   } catch (err) {
     console.log(err);
